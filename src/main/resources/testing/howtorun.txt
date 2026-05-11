@@ -1,0 +1,131 @@
+HOW TO RUN -  ERP
+
+1. JAVA VERSION
+_______________
+
+SDK: 24 Oracle OpenJDK 24.0.2
+Language Level: 17 - Sealed types, always-strict floating-point semantics
+
+
+2. REQUIRED LIBRARIES / JAR FILES
+_________________________________
+
+a) MySQL JDBC Driver
+- JAR file: mysql-connector-java-8.0.x.jar (or mysql-connector-j-8.0.x.jar)
+- Package: com.mysql.cj.jdbc.Driver
+- Minimum version: 8.0.x
+
+b) HikariCP
+- JAR file: hikaricp-x.x.x.jar
+- Package: com.zaxxer.hikari
+- Minimum version: 3.4.x
+
+c) FlatLaf
+- JAR file: flatlaf-x.x.x.jar
+- Package: com.formdev.flatlaf
+- Minimum version: 2.0.x
+
+d) MigLayout
+- JAR file: miglayout-swing-x.x.x.jar (or miglayout-core-x.x.x.jar)
+- Package: net.miginfocom.swing.MigLayout
+- Minimum version: 5.3.x
+
+e) Apache PDFBox (PDF Generation)
+- JAR files: pdfbox-x.x.x.jar, fontbox-x.x.x.jar, commons-logging-x.x.x.jar
+- Package: org.apache.pdfbox
+- Minimum version: 2.0.x
+- Note: PDFBox requires additional dependencies (fontbox, commons-logging)
+
+f) Apache Commons CSV (CSV Export)
+- JAR file: commons-csv-x.x.x.jar
+- Package: org.apache.commons.csv
+- Minimum version: 1.8.x
+
+g) jBCrypt (Password Hashing)
+- JAR file: jbcrypt-x.x.x.jar
+- Package: org.mindrot.jbcrypt
+- Minimum version: 0.4
+
+h) JUnit (Testing)
+- JAR file: junit-jupiter-api-5.x.x.jar
+- Package : org.junit.jupiter</groupId>
+- Minimum version: 5.10.x
+
+Place all JAR files in a 'lib' folder in your project root directory.
+
+
+3. DATABASE SETUP
+_________________
+
+Install MySQL Server if not already installed.
+This application 2 databases:
+
+a) Authentication Database: 'authdb'
+b) ERP Database: 'erpdb'
+
+After MySQL installation, create the databases:
+
+mysql -u root -p
+CREATE DATABASE authdb;
+CREATE DATABASE erpdb;
+EXIT;
+
+Check for seed script with sample test data in seedscript.txt
+
+
+4. DATABASE CONNECTION SETTINGS
+_______________________________
+
+Current database configuration in data/DatabaseConfig.java:
+
+Authentication Database:
+URL:      jdbc:mysql://localhost:3306/authdb
+Username: root
+Password: gerick
+
+ERP Database:
+URL:      jdbc:mysql://localhost:3306/erpdb
+Username: root
+Password: gerick
+
+Change the password in DatabaseConfig.java if your MySQL root password is different from 'gerick'.
+
+
+5. HOW TO COMPILE
+_________________
+
+From the project root directory, compile all Java files:
+
+Windows (PowerShell/Command Prompt): javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\ui\Main.java edu\univ1\**\*.java
+Linux/Mac: javac -cp "lib/*:." -d build ERP\src\main\java\edu/univ1/ui/Main.java edu/univ1/**/*.java
+
+Or compile all files individually:
+
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\api\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\auth\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\data\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\domain\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\service\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\ui\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\ui\admin\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\ui\instructor\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\ui\student\*.java
+javac -cp "lib\*;." -d build ERP\src\main\java\edu\univ1\util\*.java
+
+Create a 'build' directory first if it doesn't exist: mkdir build
+
+
+6. HOW TO RUN APPLICATION
+_________________________
+
+From the project root directory, run:
+
+Windows (PowerShell/Command Prompt): java -cp "lib\*;build;." edu.univ1.ui.Main
+Linux/Mac: java -cp "lib/*:build:." edu.univ1.ui.Main
+
+The application will start with a login window. Make sure MySQL server is running before launching the application.
+Sample Test Credentials:-
+Instructor: user- inst1         | password- inst1
+Admin:      user- admin1        | password- admin123
+Student:    user- stu1		    | password- stu1
+            user- stu2          | password- stu2	

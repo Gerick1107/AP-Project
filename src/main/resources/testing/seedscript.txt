@@ -1,0 +1,150 @@
+CREATE erpdb;
+USE erpdb;
+
+
+DROP TABLE IF EXISTS `courses`;
+CREATE TABLE `courses` (
+  `course_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(20) DEFAULT NULL,
+  `title` VARCHAR(200) DEFAULT NULL,
+  `credits` INT DEFAULT NULL,
+  PRIMARY KEY (`course_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `courses` (`course_id`, `code`, `title`, `credits`) 
+VALUES (9, 'CSE101', 'Intro To Programming', 4);
+
+
+DROP TABLE IF EXISTS `enrollments`;
+CREATE TABLE `enrollments` (
+  `enrollment_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `student_id` BIGINT DEFAULT NULL,
+  `section_id` BIGINT DEFAULT NULL,
+  `status` VARCHAR(20) DEFAULT NULL,
+  `final_score` DOUBLE DEFAULT '0',
+  `final_letter` VARCHAR(2) DEFAULT NULL,
+  `grade_point` DOUBLE DEFAULT '0',
+  PRIMARY KEY (`enrollment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `enrollments` (`enrollment_id`, `student_id`, `section_id`, `status`, `final_score`, `final_letter`, `grade_point`)
+VALUES (15, 23, 10, 'ENROLLED', 75, 'B', 8),(16, 24, 10, 'ENROLLED', 60, 'B-', 7);
+
+
+DROP TABLE IF EXISTS `grades`;
+CREATE TABLE `grades` (
+  `grade_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `enrollment_id` BIGINT DEFAULT NULL,
+  `component` VARCHAR(50) DEFAULT NULL,
+  `score` DOUBLE DEFAULT NULL,
+  `max_score` DOUBLE DEFAULT '100',
+  `weight` DOUBLE DEFAULT '0',
+  `final_grade` VARCHAR(5) DEFAULT NULL,
+  PRIMARY KEY (`grade_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `grades`
+(`grade_id`, `enrollment_id`, `component`, `score`, `max_score`, `weight`, `final_grade`)
+VALUES (22, 15, 'midsem', 80, 100, 50, NULL),(23, 16, 'midsem', 50, 100, 50, NULL),(24, 15, 'endsem', 70, 100, 50, NULL),(25, 16, 'endsem', 70, 100, 50, NULL);
+
+
+DROP TABLE IF EXISTS `instructors`;
+CREATE TABLE `instructors` (
+  `user_id` BIGINT NOT NULL,
+  `department` VARCHAR(100) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `instructors` (`user_id`, `department`) 
+VALUES (25, 'MTH');
+
+
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE `notifications` (
+  `notification_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(120) DEFAULT NULL,
+  `message` TEXT NOT NULL,
+  `audience` VARCHAR(32) NOT NULL,
+  `category` VARCHAR(32) DEFAULT NULL,
+  `auto_generated` TINYINT(1) DEFAULT '0',
+  `created_by` VARCHAR(64) DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`notification_id`),
+  KEY `idx_notifications_audience` (`audience`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `notifications`
+(`notification_id`, `title`, `message`, `audience`, `category`, `auto_generated`, `created_by`, `created_at`, `expires_at`)
+VALUES
+(6, 'test', 'testing', 'STUDENT', 'MANUAL', 0, 'admin1', '2025-11-23 16:15:26', NULL),
+(7, 'Maintenance Window', 'The system is currently under maintenance. Some operations are unavailable.', 'STUDENT', 'MAINTENANCE', 1, 'system', '2025-11-23 18:34:34', '2025-11-24 18:34:34'),
+(8, 'Maintenance Complete', 'Maintenance has concluded and services are restored.', 'STUDENT', 'MAINTENANCE', 1, 'system', '2025-11-23 18:34:36', '2025-11-24 18:34:37');
+
+
+DROP TABLE IF EXISTS `sections`;
+CREATE TABLE `sections` (
+  `section_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `course_id` BIGINT DEFAULT NULL,
+  `instructor_id` BIGINT DEFAULT NULL,
+  `day_time` VARCHAR(50) DEFAULT NULL,
+  `room` VARCHAR(50) DEFAULT NULL,
+  `capacity` INT DEFAULT NULL,
+  `semester` VARCHAR(20) DEFAULT NULL,
+  `year` INT DEFAULT NULL,
+  PRIMARY KEY (`section_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `sections`
+(`section_id`, `course_id`, `instructor_id`, `day_time`, `room`, `capacity`, `semester`, `year`)
+VALUES (10, 9, 25, 'Mon 9-10am', 'C101', 600, '1', 1);
+
+
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE `settings` (
+  `settings_key` VARCHAR(50) NOT NULL,
+  `settings_value` VARCHAR(50) DEFAULT NULL,
+  PRIMARY KEY (`settings_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `settings` (`settings_key`, `settings_value`) 
+VALUES ('maintenance', 'false'),('security.failedAttempts.1', '0'),('security.failedAttempts.14', '0'),('security.failedAttempts.15', '0'),('security.failedAttempts.17', '0'),
+('security.failedAttempts.23', '0'),('security.failedAttempts.24', '0'),('security.failedAttempts.25', '0'),('security.mustChange.14', 'false'),('security.mustChange.15', 'false');
+
+
+DROP TABLE IF EXISTS `students`;
+CREATE TABLE `students` (
+  `user_id` BIGINT NOT NULL,
+  `roll_no` VARCHAR(20) DEFAULT NULL,
+  `program` VARCHAR(100) DEFAULT NULL,
+  `year` INT DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `students` (`user_id`, `roll_no`, `program`, `year`) 
+VALUES (23, '1', 'CSE', 1),(24, '2', 'ECE', 2);
+
+
+CREATE authdb;
+USE authdb;
+
+
+DROP TABLE IF EXISTS `users_auth`;
+CREATE TABLE `users_auth` (
+  `user_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(100) NOT NULL,
+  `role` VARCHAR(20) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(20) DEFAULT 'ACTIVE',
+  `last_login` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `users_auth`
+(`user_id`, `username`, `role`, `password_hash`, `status`, `last_login`)
+VALUES
+(1,  'admin1', 'ADMIN',      '$2a$10$JkAi653wC5dmnO.gw9l6EeuGUFBksqHOB0RAEuJagApDIRoeDbPHK', 'ACTIVE', '2025-11-23 19:40:53'),
+(23, 'stu1',   'STUDENT',    '$2a$10$q3Zf3Wm9Ao.lk6n5j8G3K.mqYIW7rPtBUAqDFG2x6yysqzkkYx512', 'ACTIVE', '2025-11-23 18:32:59'),
+(24, 'stu2',   'STUDENT',    '$2a$10$q0iStFxd0dZ/XtqKYi34AOnkSiMvFYnJC2tNH.6n/TMSAl3a5A/g.', 'ACTIVE', '2025-11-23 16:17:21'),
+(25, 'inst1',  'INSTRUCTOR', '$2a$10$s5j6ILxUxT6s8G6xSGLeG.xkpXlhDnsqzpa8Y8BaX61eiyivq722W', 'ACTIVE', '2025-11-23 20:12:21');
